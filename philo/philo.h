@@ -13,16 +13,15 @@
 #ifndef PHILO_H
 # define PHILO_H
 
-#include <pthread.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+# include <pthread.h>
+# include <sys/time.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <string.h>
+# include <stdlib.h>
 
-#define sleep_time 500
-
-typedef struct s_shared {
+typedef struct s_shared
+{
 	long			start_ms;
 	int				stop;
 	pthread_mutex_t	print_mtx;
@@ -30,15 +29,17 @@ typedef struct s_shared {
 	pthread_mutex_t	*forks;
 }	t_shared;
 
-typedef	struct s_args{
-	int				n_philo;
-	int				t_die;
-	int				t_eat;
-	int				t_sleep;
-	int				must_eat;	
+typedef struct s_args
+{
+	int	n_philo;
+	int	t_die;
+	int	t_eat;
+	int	t_sleep;
+	int	must_eat;	
 }	t_args;
 
-typedef struct s_philo{
+typedef struct s_philo
+{
 	int				id;
 	long			last_meal_ms;
 	int				eat_count;
@@ -49,7 +50,8 @@ typedef struct s_philo{
 	const t_args	*a;
 }	t_philo;
 
-typedef struct s_monitor_arg{
+typedef struct s_monitor_arg
+{
 	t_shared		*sh;
 	t_philo			*ph;
 	const t_args	*a;
@@ -71,5 +73,6 @@ void	sync_start_time(t_shared *sh, t_philo *ph, int n);
 long	ft_atoi(const char *str, int *ok);
 void	*philo_thread(void *arg);
 void	*monitor_thread(void *vp);
+void	destroy_shared(t_shared *sh, const t_args *a);
 
 #endif

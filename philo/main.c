@@ -12,21 +12,6 @@
 
 #include "philo.h"
 
-static void	destroy_shared(t_shared *sh, const t_args *a)
-{
-	int	i;
-
-	i = 0;
-	while (i < a->n_philo)
-	{
-		pthread_mutex_destroy(&sh->forks[i]);
-		i++;
-	}
-	pthread_mutex_destroy(&sh->print_mtx);
-	pthread_mutex_destroy(&sh->stop_mtx);
-	free(sh->forks);
-}
-
 static int	argc6(int argc, char *argv5, t_args *a)
 {
 	long	num;
@@ -75,7 +60,7 @@ static int	parse_args(int argc, char **argv, t_args *a)
 static void	create_philo(t_args *a, t_shared *sh, t_philo *ph)
 {
 	int	i;
-	
+
 	i = 0;
 	while (i < a->n_philo)
 	{
@@ -109,14 +94,16 @@ static void	monitor_process(t_args *a, t_shared *sh, t_philo *ph)
 	destroy_shared(sh, a);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_args			a;
 	t_shared		sh;
 	t_philo			*ph;
 
 	if (parse_args(argc, argv, &a))
-		return (ft_putstr_fd("Usage: ./philo n_philo t_die t_eat t_sleep [must_eat]\n", 2), 1);
+		return (ft_putstr_fd(
+				"Usage: ./philo n_philo t_die t_eat t_sleep [must_eat]\n",
+				2), 1);
 	if (init_shared(&sh, &a))
 		return (ft_putstr_fd("Error: init_shared\n", 2), 1);
 	if (init_philos(&ph, &sh, &a))

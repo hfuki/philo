@@ -6,6 +6,7 @@ static void	update_last_eaten(t_monitor_arg *ma, int i)
 	ma->last = ma->ph[i].last_meal_ms;
 	ma->eaten = ma->ph[i].eat_count;
 	pthread_mutex_unlock(&ma->sh->stop_mtx);
+	return ;
 }
 
 static void	stop_diemessage(t_monitor_arg *ma, int i)
@@ -40,20 +41,21 @@ void	*monitor_thread(void *vp)
 	{
 		ma->all_full = 0;
 		if (is_stopped(ma->sh))
-			return NULL;
+			return ;
 		if (ma->a->must_eat > 0)
 			ma->all_full = 1;
 		i = 0;
 		while (i < ma->a->n_philo)
 		{
 			if (repeat_funcs_allfull(ma, i))
-				return NULL;
+				return ;
 			i++;
 		}
 		if (ma->all_full)
 		{
 			set_stop(ma->sh);
-			return NULL;
+			return ;
 		}
 	}
+	return ;
 }

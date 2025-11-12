@@ -24,9 +24,9 @@ static int	init_forks(t_shared *sh, const t_args *a)
 	return (0);
 }
 
-int init_shared(t_shared *sh, const t_args *a)
+int	init_shared(t_shared *sh, const t_args *a)
 {
-	int re_forks;
+	int	re_forks;
 
 	if (!sh || !a || a->n_philo <= 0)
 		return (-1);
@@ -47,7 +47,7 @@ int init_shared(t_shared *sh, const t_args *a)
 
 int	init_philos(t_philo **out, t_shared *sh, const t_args *a)
 {
-	t_philo *ps;
+	t_philo	*ps;
 	int		i;
 
 	if (!out || !sh || !a || a->n_philo <= 0 || !sh->forks)
@@ -60,7 +60,7 @@ int	init_philos(t_philo **out, t_shared *sh, const t_args *a)
 	{
 		ps[i].id = i + 1;
 		ps[i].eat_count = 0;
-		ps[i].last_meal_ms =0;
+		ps[i].last_meal_ms = 0;
 		ps[i].right = &sh->forks[i];
 		ps[i].left = &sh->forks[(i + 1) % a->n_philo];
 		ps[i].th = 0;
@@ -75,6 +75,7 @@ int	init_philos(t_philo **out, t_shared *sh, const t_args *a)
 void	sync_start_time(t_shared *sh, t_philo *ph, int n)
 {
 	int	i;
+
 	sh->start_ms = now_ms();
 	i = 0;
 	while (i < n)

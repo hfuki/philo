@@ -37,11 +37,11 @@ static void	take_forks_lmeal(t_philo *p)
 		pthread_mutex_lock(p->left);
 		log_state(p->sh, p->id, "has taken a fork");
 		pthread_mutex_lock(p->right);
-		log_state(p->sh, p->id, "has taken a fork");		
+		log_state(p->sh, p->id, "has taken a fork");
 	}
 	pthread_mutex_lock(&p->sh->stop_mtx);
 	p->last_meal_ms = now_ms();
-	pthread_mutex_unlock(&p->sh->stop_mtx);	
+	pthread_mutex_unlock(&p->sh->stop_mtx);
 	return ;
 }
 
@@ -55,7 +55,7 @@ void	take_forks_and_eat(t_philo	*p, const t_args *a)
 	log_state(p->sh, p->id, "is eating");
 	pthread_mutex_lock(&p->sh->stop_mtx);
 	p->eat_count++;
-	pthread_mutex_unlock(&p->sh->stop_mtx);	
+	pthread_mutex_unlock(&p->sh->stop_mtx);
 	if (is_stopped(p->sh))
 	{
 		pthread_mutex_unlock(p->right);
@@ -81,17 +81,18 @@ void	*philo_thread(void *arg)
 	if (p->a->n_philo == 1)
 	{
 		wait_until_die_single(p);
-		return NULL;
+		return ;
 	}
 	while (1)
 	{
 		if (is_stopped(p->sh))
-			return NULL;
+			return ;
 		take_forks_and_eat(p, p->a);
 		if (is_stopped(p->sh))
-			return NULL;
+			return ;
 		log_state(p->sh, p->id, "is sleeping");
 		usleep(p->a->t_sleep * 1000);
 		log_state(p->sh, p->id, "is thinking");
 	}
+	return ;
 }

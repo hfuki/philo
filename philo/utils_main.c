@@ -3,7 +3,7 @@
 void	ft_putstr_fd(char *msg, int fd)
 {
 	int	i;
-	
+
 	i = 0;
 	while (msg[i])
 	{
@@ -36,4 +36,20 @@ long	ft_atoi(const char *str, int *ok)
 	if (*str && (*str < '0' || *str > '9'))
 		*ok = 0;
 	return (result * sign);
+}
+
+void	destroy_shared(t_shared *sh, const t_args *a)
+{
+	int	i;
+
+	i = 0;
+	while (i < a->n_philo)
+	{
+		pthread_mutex_destroy(&sh->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&sh->print_mtx);
+	pthread_mutex_destroy(&sh->stop_mtx);
+	free(sh->forks);
+	return ;
 }
