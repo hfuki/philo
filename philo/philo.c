@@ -51,7 +51,7 @@ void	take_forks_and_eat(t_philo	*p, const t_args *a)
 
 	if (is_stopped(p->sh))
 		return ;
-	take_forks(p);
+	take_forks_lmeal(p);
 	log_state(p->sh, p->id, "is eating");
 	pthread_mutex_lock(&p->sh->stop_mtx);
 	p->eat_count++;

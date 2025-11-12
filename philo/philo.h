@@ -38,7 +38,6 @@ typedef	struct s_args{
 	int				must_eat;	
 }	t_args;
 
-
 typedef struct s_philo{
 	int				id;
 	long			last_meal_ms;
@@ -55,6 +54,9 @@ typedef struct s_monitor_arg{
 	t_philo			*ph;
 	const t_args	*a;
 	pthread_t		mon;
+	int				all_full;
+	long			last;
+	int				eaten;
 }	t_monitor_arg;
 
 int		is_stopped(t_shared *sh);

@@ -1,10 +1,10 @@
 #include "philo.h"
 
-static void	update_last_eaten(long *last, int *eaten, t_monitor_arg *ma, int i)
+static void	update_last_eaten(t_monitor_arg *ma, int i)
 {
 	pthread_mutex_lock(&ma->sh->stop_mtx);
-	last = ma->ph[i].last_meal_ms;
-	eaten = ma->ph[i].eat_count;
+	ma->last = ma->ph[i].last_meal_ms;
+	ma->eaten = ma->ph[i].eat_count;
 	pthread_mutex_unlock(&ma->sh->stop_mtx);
 }
 
@@ -17,36 +17,40 @@ static void	stop_diemessage(t_monitor_arg *ma, int i)
 	return ;
 }
 
+static int	repeat_funcs_allfull(t_monitor_arg *ma, int i)
+{
+	update_last_eaten(ma, i);
+	if (now_ms() - ma->last > ma->a->t_die)
+	{
+		stop_diemessage(ma, i);
+		return (1);
+	}
+	if (ma->all_full > 0 && ma->eaten < ma->a->must_eat)
+		ma->all_full = 0;
+	return (0);
+}
+
 void	*monitor_thread(void *vp)
 {
 	t_monitor_arg	*ma;
-	int				all_full;
 	int				i;
-	long			last;
-	int				eaten;
 
 	ma = (t_monitor_arg *)vp;
 	while (1)
 	{
-		all_full = 0;
+		ma->all_full = 0;
 		if (is_stopped(ma->sh))
 			return NULL;
 		if (ma->a->must_eat > 0)
-			all_full = 1;
+			ma->all_full = 1;
 		i = 0;
 		while (i < ma->a->n_philo)
 		{
-			update_last_eaten(&last, &eaten, ma, i);
-			if (now_ms() - last > ma->a->t_die)
-			{
-				stop_diemessage(ma, i);
+			if (repeat_funcs_allfull(ma, i))
 				return NULL;
-			}
-			if (all_full > 0 && eaten < ma->a->must_eat)
-				all_full = 0;
 			i++;
 		}
-		if (all_full)
+		if (ma->all_full)
 		{
 			set_stop(ma->sh);
 			return NULL;
