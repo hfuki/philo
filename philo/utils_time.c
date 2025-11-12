@@ -22,13 +22,12 @@ long	now_ms(void)
 
 int	msleep_long(long ms, t_shared *sh)
 {
-	long	start;
-	long	end;
+	long	deadline;
 
-	start = now_ms();
-	while (now_ms() - start < ms)
+	deadline = now_ms() + ms;
+	while (now_ms() < deadline)
 	{
-		if (!is_stopped(sh))
+		if (is_stopped(sh))
 			return (-1);
 		usleep(500);
 	}
@@ -37,9 +36,9 @@ int	msleep_long(long ms, t_shared *sh)
 
 void	log_state(t_shared *sh, int id, const char *msg)
 {
-	if (is_sttopped(sh))
+	if (is_stopped(sh))
 		return ;
 	pthread_mutex_lock(&sh->print_mtx);
-	printf("%ld %d %s \n", now_ms() - sh->start_ms, id, msg);
-	pthread_mutex_ulock(&sh->print_mtx);
+	printf("%ld %d %s \n", now_ms(), id, msg);
+	pthread_mutex_unlock(&sh->print_mtx);
 }

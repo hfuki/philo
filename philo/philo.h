@@ -47,12 +47,27 @@ typedef struct s_philo{
 	pthread_mutex_t	*right;
 	pthread_t		th;
 	t_shared		*sh;
+	const t_args	*a;
 }	t_philo;
 
-int 	is_stopped(t_shared *sh);
+typedef struct s_monitor_arg{
+	t_shared		*sh;
+	t_philo			*ph;
+	const t_args	*a;
+	pthread_t		mon;
+}	t_monitor_arg;
+
+int		is_stopped(t_shared *sh);
 void	log_state(t_shared *sh, int id, const char *msg);
 long	now_ms(void);
 int		msleep_long(long ms, t_shared *sh);
 void	set_stop(t_shared *sh);
+void	ft_putstr_fd(char *msg, int fd);
+int		init_shared(t_shared *sh, const t_args *a);
+int		init_philos(t_philo **out, t_shared *sh, const t_args *a);
+void	sync_start_time(t_shared *sh, t_philo *ph, int n);
+long	ft_atoi(const char *str, int *ok);
+void	*philo_thread(void *arg);
+void	*monitor_thread(void *vp);
 
 #endif

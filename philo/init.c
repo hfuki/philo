@@ -7,8 +7,7 @@ static int	init_forks(t_shared *sh, const t_args *a)
 	i = 0;
 	while (i < a->n_philo)
 	{
-		phtread_mutex_init(&sh->forks[i], NULL);
-		if (!&sh->forks[i])
+		if (pthread_mutex_init(&sh->forks[i], NULL) != 0)
 		{
 			while (i >= 0)
 			{
@@ -36,11 +35,9 @@ int init_shared(t_shared *sh, const t_args *a)
 	sh->forks = calloc(a->n_philo, sizeof(pthread_mutex_t));
 	if (!sh->forks)
 		return (-1);
-	phtread_mutex_init(&sh->print_mtx, NULL);
-	if (!&sh->print_mtx)
+	if (pthread_mutex_init(&sh->print_mtx, NULL) != 0)
 		return (free(sh->forks), -1);
-	phtread_mutex_init(&sh->stop_mtx, NULL);
-	if (!&sh->stop_mtx)
+	if (pthread_mutex_init(&sh->stop_mtx, NULL) != 0)
 		return (pthread_mutex_destroy(&sh->stop_mtx), free(sh->forks), -1);
 	re_forks = init_forks(sh, a);
 	if (re_forks < 0)
@@ -54,7 +51,7 @@ int	init_philos(t_philo **out, t_shared *sh, const t_args *a)
 	int		i;
 
 	if (!out || !sh || !a || a->n_philo <= 0 || !sh->forks)
-		raturn (-1);
+		return (-1);
 	ps = calloc(a->n_philo, sizeof(t_philo));
 	if (!ps)
 		return (-1);
@@ -68,6 +65,8 @@ int	init_philos(t_philo **out, t_shared *sh, const t_args *a)
 		ps[i].left = &sh->forks[(i + 1) % a->n_philo];
 		ps[i].th = 0;
 		ps[i].sh = sh;
+		ps[i].a = a;
+		i++;
 	}
 	*out = ps;
 	return (0);
@@ -81,5 +80,6 @@ void	sync_start_time(t_shared *sh, t_philo *ph, int n)
 	while (i < n)
 	{
 		ph[i].last_meal_ms = sh->start_ms;
+		i++;
 	}
 }
